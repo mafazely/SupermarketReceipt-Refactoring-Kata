@@ -21,6 +21,8 @@ public:
 private:
     std::vector<ReceiptItem> items;
     std::vector<Discount> discounts;
+
+    double getTotalPriceForReceiptItem(double quantity, double price) const;
 };
 
 
