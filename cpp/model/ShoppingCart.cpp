@@ -25,21 +25,29 @@ void ShoppingCart::addItemQuantity(const Product& product, double quantity) {
 
 void ShoppingCart::handleOffers(Receipt& receipt, std::map<Product, Offer> offers, SupermarketCatalog* catalog) {
     for (const auto& productQuantity : productQuantities) {
-        Product product = productQuantity.first;
-        double quantity = productQuantity.second;
-
-        if (offers.find(product) != offers.end()) {
-
-            int realQuantity = getRealQuantityBasedOnOfferType(offers[product]);
-
-            Discount *discount = getDiscount(product, quantity, offers[product],
-                                             catalog->getUnitPrice(product), realQuantity);
-
-            if (discount != nullptr)
-                receipt.addDiscount(*discount);
-        }
+        discountHandler(receipt, offers, catalog, productQuantity);
     }
 }
+
+void ShoppingCart::discountHandler(Receipt &receipt, std::map<Product, Offer> &offers, SupermarketCatalog *catalog,
+                                   const std::pair<const Product, double> &productQuantity) const {
+    Product product = productQuantity.first;
+    double quantity = productQuantity.second;
+
+    if (offersHaveProduct(offers, product)) {
+
+        int realQuantity = getRealQuantityBasedOnOfferType(offers[product]);
+
+        Discount *discount = getDiscount(product, quantity, offers[product],
+                                         catalog->getUnitPrice(product), realQuantity);
+
+        if (discount != nullptr)
+            receipt.addDiscount(*discount);
+    }
+}
+
+bool ShoppingCart::offersHaveProduct(std::map<Product, Offer> &offers,
+                                     const Product &product) const { return offers.find(product) != offers.end(); }
 
 Discount *ShoppingCart::getDiscount(const Product &product, double quantity, const Offer &offer, double unitPrice,
                                     int realQuantity) const {

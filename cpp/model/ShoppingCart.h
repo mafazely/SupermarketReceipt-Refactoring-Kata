@@ -42,6 +42,11 @@ private:
 
     Discount *
     getDiscount(const Product &product, double quantity, const Offer &offer, double unitPrice, int realQuantity) const;
+
+    bool offersHaveProduct(std::map<Product, Offer> &offers, const Product &product) const;
+
+    void discountHandler(Receipt &receipt, std::map<Product, Offer> &offers, SupermarketCatalog *catalog,
+                         const std::pair<const Product, double> &productQuantity) const;
 };
 
 
