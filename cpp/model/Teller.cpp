@@ -10,11 +10,7 @@ Receipt Teller::checksOutArticlesFrom(ShoppingCart theCart) {
     Receipt receipt{};
     std::vector<ProductQuantity> productQuantities = theCart.getItems();
     for (const auto& pq: productQuantities) {
-        Product p = pq.getProduct();
-        double quantity = pq.getQuantity();
-        double unitPrice = catalog->getUnitPrice(p);
-        double price = quantity * unitPrice;
-        receipt.addProduct(p, quantity, unitPrice, price);
+        receipt.addProduct(pq.getProduct(), pq.getQuantity(), catalog->getUnitPrice(pq.getProduct()));
     }
     theCart.handleOffers(receipt, offers, catalog);
 
