@@ -24,6 +24,21 @@ public:
 private:
     std::vector<ProductQuantity> items;
     std::map<Product, double> productQuantities;
+
+    int getRealQuantityBasedOnOfferType(const Offer &offer) const;
+
+    Discount *
+    getDiscountThreeForTwo(const Product &product, double quantity, double unitPrice, int quantityAsInt,
+                           int numberOfXs) const;
+
+    Discount *getDiscountFiveForAmount(const Product &product, double quantity, const Offer &offer, double unitPrice,
+                                       int quantityAsInt, int realQuantity, int numberOfXs) const;
+
+    Discount *getDiscountTwoForAmount(const Product &product, double quantity, const Offer &offer, double unitPrice,
+                                      int quantityAsInt, int realQuantity) const;
+
+    Discount *
+    getDiscountTenPercent(const Product &product, double quantity, const Offer &offer, double unitPrice) const;
 };
 
 
