@@ -73,6 +73,7 @@ Discount *ShoppingCart::getDiscount(const Product &product, double quantity, con
     if (offer.getOfferType() == SpecialOfferType::TenPercentDiscount) {
         discount = getDiscountTenPercent(product, quantity, offer, unitPrice);
     }
+
     return discount;
 }
 
@@ -113,14 +114,20 @@ ShoppingCart::getDiscountThreeForTwo(const Product &product, double quantity, do
 }
 
 int ShoppingCart::getRealQuantityBasedOnOfferType(const Offer &offer) const {
-    int realQuantity = 1;
+    int realQuantity;
 
-    if (offer.getOfferType() == SpecialOfferType::ThreeForTwo) {
-        realQuantity = 3;
-    } else if (offer.getOfferType() == SpecialOfferType::TwoForAmount) {
-        realQuantity = 2;
-    } else if (offer.getOfferType() == SpecialOfferType::FiveForAmount) {
-        realQuantity = 5;
+    switch(offer.getOfferType() ) {
+        case SpecialOfferType::ThreeForTwo:
+            realQuantity = 3;
+            break;
+        case SpecialOfferType::TwoForAmount:
+            realQuantity = 2;
+            break;
+        case SpecialOfferType::FiveForAmount:
+            realQuantity = 5;
+            break;
+        default:
+            realQuantity = 1;
     }
     return realQuantity;
 }
