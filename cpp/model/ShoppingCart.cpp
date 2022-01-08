@@ -27,38 +27,45 @@ void ShoppingCart::handleOffers(Receipt& receipt, std::map<Product, Offer> offer
     for (const auto& productQuantity : productQuantities) {
         Product product = productQuantity.first;
         double quantity = productQuantity.second;
+
         if (offers.find(product) != offers.end()) {
-            auto offer = offers[product];
-            double unitPrice = catalog->getUnitPrice(product);
-            int quantityAsInt = (int) quantity;
 
-            Discount* discount = nullptr;
+            int realQuantity = getRealQuantityBasedOnOfferType(offers[product]);
 
-            int realQuantity = getRealQuantityBasedOnOfferType(offer);
-
-            int numberOfXs = quantityAsInt / realQuantity;
-
-            if (offer.getOfferType() == SpecialOfferType::ThreeForTwo && quantityAsInt > 2) {
-                discount = getDiscountThreeForTwo(product, quantity, unitPrice, quantityAsInt, numberOfXs);
-            }
-
-            if (offer.getOfferType() == SpecialOfferType::FiveForAmount && quantityAsInt >= 5) {
-                discount = getDiscountFiveForAmount(product, quantity, offer, unitPrice, quantityAsInt, realQuantity,
-                                                    numberOfXs);
-            }
-
-            if (offer.getOfferType() == SpecialOfferType::TwoForAmount && quantityAsInt >= 2) {
-                discount = getDiscountTwoForAmount(product, quantity, offer, unitPrice, quantityAsInt, realQuantity);
-            }
-
-            if (offer.getOfferType() == SpecialOfferType::TenPercentDiscount) {
-                discount = getDiscountTenPercent(product, quantity, offer, unitPrice);
-            }
+            Discount *discount = getDiscount(product, quantity, offers[product],
+                                             catalog->getUnitPrice(product), realQuantity);
 
             if (discount != nullptr)
                 receipt.addDiscount(*discount);
         }
     }
+}
+
+Discount *ShoppingCart::getDiscount(const Product &product, double quantity, const Offer &offer, double unitPrice,
+                                    int realQuantity) const {
+    Discount* discount = nullptr;
+
+    int quantityAsInt = (int) quantity;
+
+    int numberOfXs = quantityAsInt / realQuantity;
+
+    if (offer.getOfferType() == SpecialOfferType::ThreeForTwo && quantityAsInt > 2) {
+        discount = getDiscountThreeForTwo(product, quantity, unitPrice, quantityAsInt, numberOfXs);
+    }
+
+    if (offer.getOfferType() == SpecialOfferType::FiveForAmount && quantityAsInt >= 5) {
+        discount = getDiscountFiveForAmount(product, quantity, offer, unitPrice, quantityAsInt, realQuantity,
+                                            numberOfXs);
+    }
+
+    if (offer.getOfferType() == SpecialOfferType::TwoForAmount && quantityAsInt >= 2) {
+        discount = getDiscountTwoForAmount(product, quantity, offer, unitPrice, quantityAsInt, realQuantity);
+    }
+
+    if (offer.getOfferType() == SpecialOfferType::TenPercentDiscount) {
+        discount = getDiscountTenPercent(product, quantity, offer, unitPrice);
+    }
+    return discount;
 }
 
 Discount *

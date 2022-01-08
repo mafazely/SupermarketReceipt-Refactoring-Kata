@@ -39,6 +39,9 @@ private:
 
     Discount *
     getDiscountTenPercent(const Product &product, double quantity, const Offer &offer, double unitPrice) const;
+
+    Discount *
+    getDiscount(const Product &product, double quantity, const Offer &offer, double unitPrice, int realQuantity) const;
 };
 
 
